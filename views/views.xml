@@ -1,0 +1,51 @@
+<odoo>
+  <data>
+    <!-- explicit list view definition -->
+    <record model="ir.ui.view" id="empresa.list">
+      <field name="name">Gestion Empresarial</field>
+      <field name="model">empresa.proyecto</field>
+      <field name="arch" type="xml">
+        <list>
+          <field name="nombre"/>
+          <field name="description"/>
+          <field name="fecha_inicio"/>
+          <field name="fecha_fin"/>
+          <field name="responsable"/>
+          <field name="estado"/>
+        </list>
+      </field>
+    </record>
+
+    <!-- actions opening views on models -->
+    <record model="ir.actions.act_window" id="empresa.action_window">
+      <field name="name">Gestion de Proyectos</field>
+      <field name="res_model">empresa.proyecto</field>
+      <field name="view_mode">list,form</field>
+    </record>
+
+    <!-- server action to the one above -->
+<!--
+    <record model="ir.actions.server" id="empresa.action_server">
+      <field name="name">empresa server</field>
+      <field name="model_id" ref="model_empresa_empresa"/>
+      <field name="state">code</field>
+      <field name="code">
+        action = {
+          "type": "ir.actions.act_window",
+          "view_mode": "list,form",
+          "res_model": model._name,
+        }
+      </field>
+    </record>
+-->
+
+    <!-- Top menu item -->
+    <menuitem name="Gestion de Empresa" id="empresa.menu_root"/>
+    <!-- menu categories -->
+    <menuitem name="Gestion" id="empresa.menu_1" parent="empresa.menu_root"/>
+    <!-- actions -->
+    <menuitem name="Proyectos" id="empresa.menu_1_list" parent="empresa.menu_1"
+              action="empresa.action_window"/>
+
+  </data>
+</odoo>
