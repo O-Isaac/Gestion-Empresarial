@@ -2,43 +2,78 @@
     <data>
         <!-- Lista -->
         <record model="ir.ui.view" id="proyectos_list_view">
-            <field name="name">Gestion Empresarial</field>
+            <field name="name">Proyectos</field>
             <field name="model">empresa.proyecto</field>
             <field name="arch" type="xml">
-                <list>
+                <list string="Lista de Proyectos">
                     <field name="nombre"/>
                     <field name="descripcion"/>
-                    <field name="fecha_inicio"/>
-                    <field name="fecha_fin"/>
-                    <field name="responsable"/>
-                    <field name="estado"/>
+                    <field name="progreso_total" widget="progressbar" title="Progreso"/>
+                    <field name="fecha_inicio" widget="date"/>
+                    <field name="fecha_fin" widget="date"/>
+                    <field name="responsable" widget="many2one_avatar_user"/>
+                    <field name="estado" widget="badge" decoration-success="estado=='finalizado'" decoration-warning="estado=='en_progreso'" decoration-info="estado=='en_ejecucion'" decoration-danger="estado=='cancelado'"/>
                 </list>
             </field>
         </record>
 
         <!-- Formulario -->
         <record model="ir.ui.view" id="proyectos_form_view">
-            <field name="name">Gestion Empresarial</field>
+            <field name="name">Proyecto</field>
             <field name="model">empresa.proyecto</field>
             <field name="arch" type="xml">
                 <form>
                     <sheet>
+                        <!-- FILA 1: HEADER CON TÍTULO -->
+                        <div class="oe_button_box" name="button_box"/>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="nombre" class="oe_inline" placeholder="Nombre del Proyecto"/>
+                            </h1>
+                        </div>
+
+                        <!-- FILA 2: DESCRIPCIÓN + PROGRESO + RESPONSABLE (3 columnas iguales) -->
+                        <group col="1">
+                            <div class="row" style="width: 100%;">
+                                <div class="col-lg-4" style="display: inline-block; width: 33.33%; padding: 10px; box-sizing: border-box;">
+                                    <label for="descripcion" style="font-weight: bold; display: block; margin-bottom: 10px; padding: 5px 0; color: #333;">📝 Descripción</label>
+                                    <field name="descripcion" widget="text_html" placeholder="Descripción del proyecto..." nolabel="1" style="background-color: #f9f9f9; border: 1px solid #ddd; padding: 8px;"/>
+                                </div>
+                                <div class="col-lg-4" style="display: inline-block; width: 33.33%; padding: 10px; box-sizing: border-box;">
+                                    <label for="progreso" style="font-weight: bold; display: block; margin-bottom: 10px; padding: 5px 0; color: #333;">📊 Progreso</label>
+                                    <field name="progreso_total" widget="gauge" options="{'max_value': 100}" nolabel="1" string=""/>
+                                </div>
+                                <div class="col-lg-4" style="display: inline-block; width: 33.33%; padding: 10px; box-sizing: border-box;">
+                                    <label for="responsable" style="font-weight: bold; display: block; margin-bottom: 10px; padding: 5px 0; color: #333;">👤 Responsable</label>
+                                    <field name="responsable" widget="many2one" nolabel="1" style="background-color: #f9f9f9; border: 1px solid #ddd; padding: 8px;"/>
+                                </div>
+                            </div>
+                        </group>
+
+                        <!-- FILA 3: ESTADO Y FECHAS (3 columnas iguales) -->
+                        <group col="1">
+                            <div class="row" style="width: 100%;">
+                                <div class="col-lg-4" style="display: inline-block; width: 33.33%; padding: 10px; box-sizing: border-box;">
+                                    <label for="estado" style="font-weight: bold; display: block; margin-bottom: 10px; padding: 5px 0; color: #333;">🎯 Estado</label>
+                                    <field name="estado" widget="selection" nolabel="1" style="background-color: #f9f9f9; border: 1px solid #ddd; padding: 8px;"/>
+                                </div>
+                                <div class="col-lg-4" style="display: inline-block; width: 33.33%; padding: 10px; box-sizing: border-box;">
+                                    <label style="font-weight: bold; display: block; margin-bottom: 10px; padding: 5px 0; color: #333;">📅 Fecha Inicio</label>
+                                    <field name="fecha_inicio" widget="date" nolabel="1" style="background-color: #f9f9f9; border: 1px solid #ddd; padding: 8px;"/>
+                                    <label style="font-weight: bold; display: block; margin-top: 10px; margin-bottom: 10px; padding: 5px 0; color: #333;">🏁 Fecha Fin</label>
+                                    <field name="fecha_fin" widget="date" nolabel="1" style="background-color: #f9f9f9; border: 1px solid #ddd; padding: 8px;"/>
+                                </div>
+                                <div class="col-lg-4" style="display: inline-block; width: 33.33%; padding: 10px; box-sizing: border-box;">
+                                </div>
+                            </div>
+                        </group>
+
+                        <!-- NOTEBOOK: TAREAS -->
                         <notebook>
-                            <page string="Detalles del Proyecto">
-                                <group>
-                                    <field name="nombre"/>
-                                    <field name="descripcion"/>
-                                    <field name="fecha_inicio"/>
-                                    <field name="fecha_fin"/>
-                                    <field name="responsable"/>
-                                    <field name="estado"/>
-                                </group>
+                            <page string="🔧 Tareas Asociadas">
+                                <field name="trabajos_ids" nolabel="1"/>
                             </page>
-                            <page string="Tareas del proyecto">
-                                <group>
-                                    <field name="trabajos_ids"/>
-                                </group>
-                            </page>
+
                         </notebook>
                     </sheet>
                 </form>
@@ -51,6 +86,24 @@
             <field name="name">Proyectos</field>
             <field name="res_model">empresa.proyecto</field>
             <field name="view_mode">list,form</field>
+        </record>
+
+        <!-- Vista Tree de Trabajos para el Proyecto -->
+        <record model="ir.ui.view" id="trabajos_tree_view">
+            <field name="name">Trabajos Tree</field>
+            <field name="model">empresa.trabajo</field>
+            <field name="arch" type="xml">
+                <tree create="true" edit="bottom" delete="true">
+                    <field name="nombre"/>
+                    <field name="descripcion"/>
+                    <field name="progreso_total" widget="progressbar" title="Progreso"/>
+                    <field name="estado" widget="badge" decoration-success="estado=='finalizado'" decoration-warning="estado=='en_progreso'" decoration-info="estado=='en_revision'" decoration-danger="estado=='pendiente'"/>
+                    <field name="prioridad" widget="badge" decoration-danger="prioridad=='urgente'" decoration-warning="prioridad=='alta'"/>
+                    <field name="fecha_inicio" widget="date"/>
+                    <field name="fecha_fin" widget="date"/>
+                    <field name="responsable" widget="many2one_avatar_user"/>
+                </tree>
+            </field>
         </record>
     </data>
 </odoo>

@@ -1,0 +1,79 @@
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="actividad_list_view">
+            <field name="name">Actividades</field>
+            <field name="model">empresa.actividad</field>
+            <field name="arch" type="xml">
+                <list string="Lista de Actividades">
+                    <field name="nombre"/>
+                    <field name="trabajo_id" string="🔗 Trabajo"/>
+                    <field name="persona" widget="many2one_avatar_user" string="👤 Asignado a"/>
+                    <field name="inicio_planificado" widget="date" string="📌 Inicio"/>
+                    <field name="final_planificado" widget="date" string="🏁 Fin"/>
+                    <field name="estado" widget="badge" decoration-success="estado=='finalizado'" decoration-warning="estado=='en_curso'" decoration-info="estado=='en_revision'" decoration-danger="estado=='pendiente'" string="🎯 Estado"/>
+                </list>
+            </field>
+        </record>
+
+        <record model="ir.ui.view" id="actividad_form_view">
+            <field name="name">Actividad</field>
+            <field name="model">empresa.actividad</field>
+            <field name="arch" type="xml">
+                <form>
+                    <sheet>
+                        <!-- FILA 1: HEADER CON TÍTULO -->
+                        <div class="oe_button_box" name="button_box"/>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="nombre" class="oe_inline" placeholder="Nombre de la Actividad"/>
+                            </h1>
+                        </div>
+
+                        <!-- Estado en statusbar fuera de divs para que funcione en modal -->
+                        <field name="estado" widget="statusbar" options="{'clickable': '1'}"/>
+
+                        <!-- FILA 2: DESCRIPCIÓN + RESPONSABLE + TRABAJO (3 columnas iguales) -->
+                        <group col="1">
+                            <div class="row" style="width: 100%;">
+                                <div class="col-lg-4" style="display: inline-block; width: 33.33%; padding: 10px; box-sizing: border-box;">
+                                    <label for="detalle" style="font-weight: bold; display: block; margin-bottom: 10px; padding: 5px 0; color: #333;">📝 Descripción</label>
+                                    <field name="detalle" widget="text_html" placeholder="Detalles de la actividad..." nolabel="1" style="background-color: #f9f9f9; border: 1px solid #ddd; padding: 8px;"/>
+                                </div>
+                                <div class="col-lg-4" style="display: inline-block; width: 33.33%; padding: 10px; box-sizing: border-box;">
+                                    <label for="persona" style="font-weight: bold; display: block; margin-bottom: 10px; padding: 5px 0; color: #333;">👤 Asignado a</label>
+                                    <field name="persona" widget="many2one" nolabel="1" style="background-color: #f9f9f9; border: 1px solid #ddd; padding: 8px;"/>
+                                </div>
+                                <div class="col-lg-4" style="display: inline-block; width: 33.33%; padding: 10px; box-sizing: border-box;">
+                                    <label for="trabajo_id" style="font-weight: bold; display: block; margin-bottom: 10px; padding: 5px 0; color: #333;">🔗 Trabajo</label>
+                                    <field name="trabajo_id" nolabel="1" style="background-color: #f9f9f9; border: 1px solid #ddd; padding: 8px;"/>
+                                </div>
+                            </div>
+                        </group>
+
+                        <!-- FILA 3: FECHAS -->
+                        <group col="1">
+                            <div class="row" style="width: 100%;">
+                                <div class="col-lg-4" style="display: inline-block; width: 33.33%; padding: 10px; box-sizing: border-box;">
+                                    <label style="font-weight: bold; display: block; margin-bottom: 10px; padding: 5px 0; color: #333;">📅 Fecha Inicio</label>
+                                    <field name="inicio_planificado" widget="date" nolabel="1" style="background-color: #f9f9f9; border: 1px solid #ddd; padding: 8px;"/>
+                                </div>
+                                <div class="col-lg-4" style="display: inline-block; width: 33.33%; padding: 10px; box-sizing: border-box;">
+                                    <label style="font-weight: bold; display: block; margin-bottom: 10px; padding: 5px 0; color: #333;">🏁 Fecha Fin</label>
+                                    <field name="final_planificado" widget="date" nolabel="1" style="background-color: #f9f9f9; border: 1px solid #ddd; padding: 8px;"/>
+                                </div>
+                                <div class="col-lg-4" style="display: inline-block; width: 33.33%; padding: 10px; box-sizing: border-box;">
+                                </div>
+                            </div>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record model="ir.actions.act_window" id="empresa_actividad_action">
+            <field name="name">Actividades</field>
+            <field name="res_model">empresa.actividad</field>
+            <field name="view_mode">list,form</field>
+        </record>
+    </data>
+</odoo>

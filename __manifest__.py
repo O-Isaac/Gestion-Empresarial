@@ -23,6 +23,7 @@
     'data': [
         'security/ir.model.access.csv',
         'views/menu.xml',
+        'views/actividad.xml',
         'views/proyecto.xml',
         'views/trabajo.xml',
     ],
